@@ -12,7 +12,6 @@
 - Вход по email и паролю
 - Хеширование паролей (bcrypt)
 - Взаимодействие через PostgresSQL
-      Поднять через Docker ```bach sudo docker run --name auth -p 5432:5432 -e POSTGRES_PASSWORD=2202 -d postgres:13.3
 - REST API на Gin
 
 ## Что в планах добавить
@@ -24,3 +23,10 @@
 - Прикрутить к фронтенду на React и Ts
 
 Если у вас есть идеи как улучшить welcome
+
+```bash
+# Запустить PostgreSQL в Docker
+sudo docker run --name auth -p 5432:5432 -e POSTGRES_PASSWORD=2202 -d postgres:13.3
+
+# Запустить приложение
+go run main.go
