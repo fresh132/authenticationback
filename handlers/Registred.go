@@ -3,11 +3,11 @@ package handlers
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/fresh132/authenticationback/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -48,12 +48,12 @@ func (h *Handler) Registred(c *gin.Context) {
 		return
 	}
 
-	uuidString := uuid.New().String()
+	create := time.Now()
 
 	user := models.User{
-		ID:       uuidString,
-		Mail:     input.Mail,
-		Password: string(HashedPassword),
+		Mail:       input.Mail,
+		Password:   string(HashedPassword),
+		CreateTime: int(time.Since(create)),
 	}
 
 	err = h.DB.Create(&user).Error

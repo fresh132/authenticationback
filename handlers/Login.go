@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (h *Handler) Entrance(c *gin.Context) {
+func (h *Handler) Login(c *gin.Context) {
 	var input struct {
 		ID       string `json:"id"`
 		Mail     string `json:"mail"`

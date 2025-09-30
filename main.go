@@ -18,7 +18,7 @@ func main() {
 	r := gin.Default()
 
 	r.POST("/register", handler.Registred)
-	r.POST("/enter", handler.Entrance)
+	r.POST("/enter", handler.Login)
 
 	r.Run(":9091")
 }
