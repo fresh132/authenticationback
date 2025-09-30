@@ -19,6 +19,6 @@ func main() {
 
 	r.POST("/register", handler.Registred)
 	r.POST("/enter", handler.Login)
-
+	r.PATCH("/change", handler.ChangePassword)
 	r.Run(":9091")
 }

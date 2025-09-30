@@ -2,23 +2,23 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/fresh132/authenticationback/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (h *Handler) Registred(c *gin.Context) {
 	var input struct {
-		Mail     string `json:"mail"`
-		Password string `json:"password"`
+		Mail     string `json:"mail" binding:"required,email"`
+		Password string `json:"password" binding:"required,min=8"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат данных"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверно набран логин или пароль"})
 		return
 	}
 
@@ -31,16 +31,6 @@ func (h *Handler) Registred(c *gin.Context) {
 		return
 	}
 
-	if !strings.Contains(input.Mail, "@") {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат email"})
-		return
-	}
-
-	if len(input.Password) < 8 {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Пароль должен содержать минимум 8 символов"})
-		return
-	}
-
 	HashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 
 	if err != nil {
@@ -49,8 +39,10 @@ func (h *Handler) Registred(c *gin.Context) {
 	}
 
 	create := time.Now()
+	uuid, _ := uuid.NewRandom()
 
 	user := models.User{
+		ID:         uuid,
 		Mail:       input.Mail,
 		Password:   string(HashedPassword),
 		CreateTime: int(time.Since(create)),

@@ -1,10 +1,14 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
-	Mail       string `json:"mail" gorm:"unique"`
-	Password   string `json:"password"`
-	CreateTime int    `json:"createtime" gorm:"unique"`
+	ID         uuid.UUID `json:"id" gorm:"unique"`
+	Mail       string    `json:"mail" gorm:"unique"`
+	Password   string    `json:"password"`
+	CreateTime int       `json:"createtime" gorm:"unique"`
 }

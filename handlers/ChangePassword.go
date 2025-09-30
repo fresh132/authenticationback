@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/fresh132/authenticationback/models"
 	"github.com/gin-gonic/gin"
@@ -11,23 +10,13 @@ import (
 
 func (h *Handler) ChangePassword(c *gin.Context) {
 	var input struct {
-		Mail        string `json:"mail"`
-		OldPassword string `json:"oldpassword"`
-		NewPassword string `json:"newpassword"`
+		Mail        string `json:"mail" binding:"required,email"`
+		OldPassword string `json:"oldpassword" binding:"required,min=8"`
+		NewPassword string `json:"newpassword" binding:"required,min=8"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат данных"})
-		return
-	}
-
-	if !strings.Contains(input.Mail, "@") {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат email"})
-		return
-	}
-
-	if len(input.NewPassword) < 8 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Пароль должен содержать минимум 8 символов"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверно набран логин или пароль"})
 		return
 	}
 
@@ -36,7 +25,8 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 	result := h.DB.Where("mail=?", input.Mail).First(&user)
 
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не найден!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неправильный логин"})
+		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword)); err != nil {
@@ -44,12 +34,13 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	if err := h.DB.Where("mail=?", input.NewPassword).First(&user).Error; err == nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "Новый пароль уже занят"})
+	hachPassword, err := bcrypt.GenerateFromPassword([]byte(input.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ошибка при хешировании пароля"})
 		return
 	}
 
-	user.Password = input.NewPassword
+	user.Password = string(hachPassword)
 
 	if err := h.DB.Save(&user).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "Ошибка при обновлении пароля, попробуйте еще раз"})

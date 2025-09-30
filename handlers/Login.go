@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fresh132/authenticationback/models"
@@ -11,13 +10,12 @@ import (
 
 func (h *Handler) Login(c *gin.Context) {
 	var input struct {
-		ID       string `json:"id"`
-		Mail     string `json:"mail"`
-		Password string `json:"password"`
+		Mail     string `json:"mail" binding:"required,email"`
+		Password string `json:"password" binding:"required,min=8"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат данных"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверно набран логин или пароль"})
 		return
 	}
 
@@ -26,17 +24,13 @@ func (h *Handler) Login(c *gin.Context) {
 	result := h.DB.Where("mail=?", input.Mail).First(&user)
 
 	if result.Error != nil {
-		fmt.Println("Пользователь не найден")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный email"})
+		return
 	}
 
-	if user.Mail != input.Mail {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный логин"})
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный пароль"})
 		return
-	} else {
-		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный пароль"})
-			return
-		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Вы успешно вошли в систему"})
