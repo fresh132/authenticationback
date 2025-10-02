@@ -6,6 +6,8 @@ import (
 )
 
 func (h *Handler) DeleteProfile(c *gin.Context) {
+	userUUID, _ := c.Get("user_id")
+
 	Email, exitsts := c.Get("user_email")
 
 	if !exitsts {
@@ -13,9 +15,7 @@ func (h *Handler) DeleteProfile(c *gin.Context) {
 		return
 	}
 
-	var user models.User
-
-	result := h.DB.Where("mail = ?", Email).Delete(&user)
+	result := h.DB.Unscoped().Delete(&models.User{}, "id = ?", userUUID)
 
 	if result.Error != nil {
 		c.JSON(400, gin.H{"error": "Ошибка при удалении профиля"})
