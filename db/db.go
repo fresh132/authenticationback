@@ -2,13 +2,22 @@ package db
 
 import (
 	"fmt"
+	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func InitDB() *gorm.DB {
-	dsn := "host=localhost user=postgres password=2202 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Krasnoyarsk"
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Ошибка загрузки .env файла: ", err)
+	}
+
+	dsn := os.Getenv("DB_URL")
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {

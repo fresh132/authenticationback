@@ -38,14 +38,14 @@ func (h *Handler) Registred(c *gin.Context) {
 		return
 	}
 
-	create := time.Now()
+	nowtime := time.Now()
 	uuid, _ := uuid.NewRandom()
 
 	user := models.User{
 		ID:         uuid,
 		Mail:       input.Mail,
 		Password:   string(HashedPassword),
-		CreateTime: int(time.Since(create)),
+		CreateTime: nowtime,
 	}
 
 	err = h.DB.Create(&user).Error

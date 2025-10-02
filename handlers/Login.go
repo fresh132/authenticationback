@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	authjwt "github.com/fresh132/authenticationback/authJWT"
 	"github.com/fresh132/authenticationback/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -33,6 +34,15 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Вы успешно вошли в систему"})
+	tokenString, err := authjwt.GenerateToken(user.ID.String(), user.Mail)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка генерации токена"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Вы успешно вошли в систему",
+		"token":   tokenString,
+	})
 
 }

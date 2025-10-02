@@ -8,7 +8,12 @@ require (
 	gorm.io/gorm v1.31.0
 )
 
-require github.com/go-playground/validator/v10 v10.27.0 // indirect
+require github.com/golang-jwt/jwt/v5 v5.3.0
+
+require (
+	github.com/go-playground/validator/v10 v10.27.0 // indirect
+	github.com/joho/godotenv v1.5.1
+)
 
 require (
 	github.com/google/uuid v1.6.0

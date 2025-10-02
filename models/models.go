@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -10,5 +12,5 @@ type User struct {
 	ID         uuid.UUID `json:"id" gorm:"unique"`
 	Mail       string    `json:"mail" gorm:"unique"`
 	Password   string    `json:"password"`
-	CreateTime int       `json:"createtime" gorm:"unique"`
+	CreateTime time.Time `json:"createtime"`
 }

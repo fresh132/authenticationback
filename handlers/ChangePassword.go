@@ -9,9 +9,15 @@ import (
 )
 
 func (h *Handler) ChangePassword(c *gin.Context) {
+
+	Email, exitsts := c.Get("user_email")
+
+	if !exitsts {
+		c.JSON(401, gin.H{"error": "Пользователь не авторизован"})
+		return
+	}
+
 	var input struct {
-		Mail        string `json:"mail" binding:"required,email"`
-		OldPassword string `json:"oldpassword" binding:"required,min=8"`
 		NewPassword string `json:"newpassword" binding:"required,min=8"`
 	}
 
@@ -22,15 +28,10 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 
 	var user models.User
 
-	result := h.DB.Where("mail=?", input.Mail).First(&user)
+	result := h.DB.Where("mail=?", Email).First(&user)
 
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неправильный логин"})
-		return
-	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword)); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный пароль"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не найден"})
 		return
 	}
 
