@@ -27,12 +27,13 @@
 Если у вас есть идеи как улучшить welcome
 
 ## Запуск:
-Создайте .env файл с содержиым
-DB_URL="host=localhost user=postgres password=1234 dbname=postgres port=5432 sslmode=disable"
-JWT_SECRET="Ваш ключ подписи(можно написать что угодно но лучше выполните команду из терминала ниже и скопируйте содержимое вывода сюда)"
-PORT="8080"
+Создайте .env файл с содержиым:
 
 ```bash
+#DB_URL="host=localhost user=postgres password=1234 dbname=postgres port=5432 sslmode=disable"
+#JWT_SECRET="Ваш ключ подписи(можно написать что угодно но лучше выполните команду из терминала ниже и скопируйте содержимое вывода сюда)"
+#PORT="8080"
+
 # Получить ключ подписи
 openssl rand -base64 32
 
