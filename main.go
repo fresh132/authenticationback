@@ -1,18 +1,26 @@
 package main
 
 import (
+	"os"
+
 	"github.com/fresh132/authenticationback/authJWT"
 	"github.com/fresh132/authenticationback/db"
 	"github.com/fresh132/authenticationback/handlers"
+	"github.com/fresh132/authenticationback/logger"
 	"github.com/fresh132/authenticationback/models"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	logger.InitLogger()
+
 	database := db.InitDB()
 
-	database.AutoMigrate(&models.User{})
+	if err := database.AutoMigrate(&models.User{}); err != nil {
+		logger.Error.Error("Ошибка миграции: " + err.Error())
+		panic("Ошибка миграции: " + err.Error())
+	}
 
 	handler := handlers.NewHandler(database)
 
@@ -28,5 +36,13 @@ func main() {
 		auth.DELETE("/delete", handler.DeleteProfile)
 		auth.PUT("/update", handler.ChangePassword)
 	}
-	r.Run(":9091")
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9091"
+	}
+
+	logger.Info.Info("Сервер запущен на порту " + port)
+
+	r.Run(":" + port)
 }
