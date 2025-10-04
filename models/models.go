@@ -14,3 +14,12 @@ type User struct {
 	Password   string    `json:"password"`
 	CreateTime time.Time `json:"createtime"`
 }
+
+type PasswordChangeRequest struct {
+	NewPassword string `json:"newpassword" binding:"required,min=8"`
+}
+
+type PasswordMailRequest struct {
+	Mail     string `json:"mail" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8"`
+}

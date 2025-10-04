@@ -9,6 +9,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary Create ChangePassword
+// @Security ApiKeyAuth
+// @Description Позволяет авторизованному пользователю сменить пароль
+// @Tags user
+// @ID ChangePassword
+// @Accept  json
+// @Produce json
+// @Param   input  body  models.PasswordChangeRequest  true  "Новый пароль (минимум 8 символов)"
+// @Success 200  {object}  map[string]string  "Пароль обновлен успешно!"
+// @Failure 400  {object}  map[string]string  "Неверно набран логин или пароль / Пользователь не найден / Ошибка при хешировании пароля"
+// @Failure 401  {object}  map[string]string  "Пользователь не авторизован"
+// @Failure 409  {object}  map[string]string  "Ошибка при обновлении пароля, попробуйте еще раз"
+// @Router /auth/update [put]
 func (h *Handler) ChangePassword(c *gin.Context) {
 	userUUID, userIDExists := c.Get("user_id")
 	Email, emailExists := c.Get("user_email")
@@ -40,6 +53,15 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 	var user models.User
 
 	result := h.DB.Where("mail=?", Email).First(&user)
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.NewPassword)); err == nil {
+		logger.Warn.Warn("Попытка смены пароля на текущий",
+			"Email", Email,
+			"Ip", c.ClientIP(),
+		)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Новый пароль не должен совпадать с текущим"})
+		return
+	}
 
 	if result.Error != nil {
 		logger.Error.Error("Ошибка при получении пользователя из базы данных",

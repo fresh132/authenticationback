@@ -45,3 +45,6 @@ go mod tidy
 
 # Запустить приложение
 go run main.go
+
+# Документация API
+[text](http://localhost:9091/swagger/index.html#/)

@@ -3,15 +3,25 @@ package main
 import (
 	"os"
 
-	"github.com/fresh132/authenticationback/authJWT"
+	authjwt "github.com/fresh132/authenticationback/authJWT"
 	"github.com/fresh132/authenticationback/db"
+	_ "github.com/fresh132/authenticationback/docs"
 	"github.com/fresh132/authenticationback/handlers"
 	"github.com/fresh132/authenticationback/logger"
 	"github.com/fresh132/authenticationback/models"
-
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Authentication Service
+// @version 1.0
+// @description Сервис аутентификации пользователей с использованием JWT.
+// @host localhost:9091
+// @BasePath /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	logger.InitLogger()
 
@@ -36,6 +46,8 @@ func main() {
 		auth.DELETE("/delete", handler.DeleteProfile)
 		auth.PUT("/update", handler.ChangePassword)
 	}
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	port := os.Getenv("PORT")
 	if port == "" {

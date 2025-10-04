@@ -1,0 +1,218 @@
+basePath: /
+definitions:
+  models.PasswordChangeRequest:
+    properties:
+      newpassword:
+        minLength: 8
+        type: string
+    required:
+    - newpassword
+    type: object
+  models.PasswordMailRequest:
+    properties:
+      mail:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - mail
+    - password
+    type: object
+host: localhost:9091
+info:
+  contact: {}
+  description: Сервис аутентификации пользователей с использованием JWT.
+  title: Authentication Service
+  version: "1.0"
+paths:
+  /auth/delete:
+    delete:
+      description: Удаляет аккаунт текущего пользователя
+      operationId: DeleteProfile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Профиль успешно удален
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Ошибка при удалении профиля
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Профиль не найден
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteProfile
+      tags:
+      - user
+  /auth/update:
+    put:
+      consumes:
+      - application/json
+      description: Позволяет авторизованному пользователю сменить пароль
+      operationId: ChangePassword
+      parameters:
+      - description: Новый пароль (минимум 8 символов)
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.PasswordChangeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пароль обновлен успешно!
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверно набран логин или пароль / Пользователь не найден /
+            Ошибка при хешировании пароля
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Ошибка при обновлении пароля, попробуйте еще раз
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create ChangePassword
+      tags:
+      - user
+  /auth/user:
+    get:
+      description: Возвращает информацию о текущем пользователе
+      operationId: GetProfile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о пользователе
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Пользователь не найден
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: GetProfile
+      tags:
+      - user
+  /enter:
+    post:
+      consumes:
+      - application/json
+      description: Вход по email и паролю, возвращает JWT-токен
+      operationId: Login
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.PasswordMailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Вы успешно вошли в систему + токен
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверный email или пароль
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Ошибка генерации токена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт нового пользователя по email и паролю
+      parameters:
+      - description: Данные для регистрации
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.PasswordMailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь успешно зарегистрирован
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверно набран логин или пароль / Пользователь уже существует
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Ошибка при хешировании пароля / Ошибка при сохранении пользователя
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Registred
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -6,6 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      DeleteProfile
+// @Security     ApiKeyAuth
+// @Description  Удаляет аккаунт текущего пользователя
+// @ID           DeleteProfile
+// @Tags         user
+// @Produce      json
+// @Success      200  {object}  map[string]string  "Профиль успешно удален"
+// @Failure      401  {object}  map[string]string  "Пользователь не авторизован"
+// @Failure      400  {object}  map[string]string  "Ошибка при удалении профиля"
+// @Failure      404  {object}  map[string]string  "Профиль не найден"
+// @Router       /auth/delete [delete]
 func (h *Handler) DeleteProfile(c *gin.Context) {
 	userUUID, _ := c.Get("user_id")
 

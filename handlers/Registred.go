@@ -12,6 +12,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary      Registred
+// @Description  Создаёт нового пользователя по email и паролю
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input  body models.PasswordMailRequest true  "Данные для регистрации"
+// @Success      200  {object}  map[string]string  "Пользователь успешно зарегистрирован"
+// @Failure      400  {object}  map[string]string  "Неверно набран логин или пароль / Пользователь уже существует"
+// @Failure      500  {object}  map[string]string  "Ошибка при хешировании пароля / Ошибка при сохранении пользователя"
+// @Router       /register [post]
 func (h *Handler) Registred(c *gin.Context) {
 	var input struct {
 		Mail     string `json:"mail" binding:"required,email"`

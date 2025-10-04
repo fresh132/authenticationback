@@ -8,6 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      GetProfile
+// @Security	 ApiKeyAuth
+// @Description  Возвращает информацию о текущем пользователе
+// @ID           GetProfile
+// @Tags         user
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}  "Информация о пользователе"
+// @Failure      401  {object}  map[string]string       "Пользователь не авторизован"
+// @Failure      404  {object}  map[string]string       "Пользователь не найден"
+// @Router       /auth/user [get]
 func (h *Handler) GetProfile(c *gin.Context) {
 	userUUID, userIDExists := c.Get("user_id")
 	Email, emailExists := c.Get("user_email")

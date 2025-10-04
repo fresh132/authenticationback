@@ -10,6 +10,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary      Login
+// @Description  Вход по email и паролю, возвращает JWT-токен
+// @ID           Login
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input  body  models.PasswordMailRequest  true  "Данные для входа"
+// @Success      200  {object}  map[string]string  "Вы успешно вошли в систему + токен"
+// @Failure      400  {object}  map[string]string  "Неверный email или пароль"
+// @Failure      500  {object}  map[string]string  "Ошибка генерации токена"
+// @Router       /enter [post]
 func (h *Handler) Login(c *gin.Context) {
 	var input struct {
 		Mail     string `json:"mail" binding:"required,email"`
