@@ -9,6 +9,7 @@ import (
 	"github.com/fresh132/authenticationback/handlers"
 	"github.com/fresh132/authenticationback/logger"
 	"github.com/fresh132/authenticationback/models"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -35,6 +36,14 @@ func main() {
 	handler := handlers.NewHandler(database)
 
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	r.POST("/register", handler.Registred)
 	r.POST("/enter", handler.Login)
