@@ -8,7 +8,7 @@
 
 ## Что уже работает
 
-- JWT токены\
+- JWT токены
 - 3х уровневое логирование
 - Регистрация новых пользователей
 - Вход по email и паролю
@@ -27,9 +27,9 @@
 Если у вас есть идеи как улучшить welcome
 
 ## Запуск:
-Создайте .env файл с содержиым:
 
 ```bash
+#Создайте .env файл с содержимым:
 #DB_URL="host=localhost user=postgres password=1234 dbname=postgres port=5432 sslmode=disable"
 #JWT_SECRET="Ваш ключ подписи(можно написать что угодно но лучше выполните команду из терминала ниже и скопируйте содержимое вывода сюда)"
 #PORT="8080"
@@ -47,4 +47,4 @@ go mod tidy
 go run main.go
 
 # Документация API
-[text](http://localhost:9091/swagger/index.html#/)
+http://localhost:9091/swagger/index.html#
