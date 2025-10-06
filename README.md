@@ -38,14 +38,8 @@
 # Получить ключ подписи
 openssl rand -base64 32
 
-# Запустить PostgreSQL в Docker
-sudo docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=1234 -d postgres:13.3
-
-# Установить библеотек
-go mod tidy
-
-# Запустить приложение
-go run main.go
+#Запуск 
+sudo docker compose up --build
 
 # Документация API
 http://localhost:9091/swagger/index.html#
