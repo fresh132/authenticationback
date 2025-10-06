@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -21,7 +20,7 @@ func InitDB() *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		fmt.Println("Не удалось подключиться к базе данных", err)
+		log.Fatalf("Не удалось подключиться к базе: %v", err)
 	}
 
 	return db

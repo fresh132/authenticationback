@@ -65,5 +65,6 @@ func main() {
 
 	logger.Info.Info("Сервер запущен на порту " + port)
 
+	gin.SetMode(gin.ReleaseMode)
 	r.Run(":" + port)
 }
