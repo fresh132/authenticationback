@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-// Создаем axios инстанс с базовыми настройками
 const api = axios.create({
-  baseURL: '', // Пустой baseURL, так как используем относительные пути
+  baseURL: '', 
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 10000, // Таймаут 10 секунд
 });
 
-// Интерцептор для добавления токена к запросам
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -23,10 +22,10 @@ api.interceptors.request.use(
   }
 );
 
-// Интерцептор для обработки ошибок
+
 api.interceptors.response.use(
   (response) => {
-    // Логируем успешные ответы для отладки
+
     if (response.config.url?.includes('/auth/user')) {
       console.log('Profile response:', response.data);
     }
@@ -73,7 +72,7 @@ export const authService = {
       });
       console.log('Get profile response:', response.data);
       
-      // Проверяем структуру ответа
+  
       if (!response.data) {
         throw new Error('Пустой ответ от сервера');
       }

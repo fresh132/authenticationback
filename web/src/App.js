@@ -11,7 +11,7 @@ import './App.css';
 function AppRoutes() {
   const { token, loading } = useAuth();
 
-  // Показываем загрузку только при реальной загрузке
+ 
   if (loading) {
     return (
       <div className="loading-container">

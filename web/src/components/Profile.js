@@ -58,7 +58,6 @@ const Profile = () => {
         setMessageType('error');
         setLoading(false);
       }
-      // Если успешно, произойдет редирект на страницу входа через AuthContext
     }
   };
 
@@ -66,7 +65,6 @@ const Profile = () => {
     navigate('/welcome');
   };
 
-  // Функция для форматирования даты
   const formatDate = (dateString) => {
     if (!dateString) return 'Неизвестно';
     try {

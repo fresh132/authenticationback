@@ -18,7 +18,6 @@ const Register = () => {
     setLoading(true);
     setMessage('');
 
-    // Валидация паролей
     if (password !== confirmPassword) {
       setMessage('Пароли не совпадают');
       setMessageType('error');
@@ -38,12 +37,11 @@ const Register = () => {
     if (result.success) {
       setMessage('Регистрация прошла успешно! Теперь вы можете войти.');
       setMessageType('success');
-      // Очищаем форму
+      
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       
-      // Перенаправляем на страницу входа через 2 секунды
       setTimeout(() => {
         navigate('/login');
       }, 2000);

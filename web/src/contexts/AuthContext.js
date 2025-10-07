@@ -22,18 +22,17 @@ export const AuthProvider = ({ children }) => {
         const savedToken = localStorage.getItem('token');
         if (savedToken) {
           setToken(savedToken);
-          
-          // Проверяем валидность токена
+
           try {
             const userData = await authService.getProfile(savedToken);
-            // Бэкенд возвращает {user: {id, mail, created_at}}
+
             if (userData && userData.user) {
               setUser(userData.user);
             } else {
               throw new Error('Неверный формат данных');
             }
           } catch (error) {
-            // Токен невалидный, удаляем его
+
             console.log('Token invalid, removing...', error.message);
             localStorage.removeItem('token');
             setToken(null);
@@ -56,7 +55,7 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
       localStorage.setItem('token', token);
       
-      // Получаем данные пользователя
+
       try {
         const userData = await authService.getProfile(token);
         if (userData && userData.user) {
